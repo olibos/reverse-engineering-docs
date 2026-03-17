@@ -1,0 +1,46 @@
+<section data-transition="slide">
+  <div class="corner-tl"></div>
+  <h2>🔍 Exemple Réel — Couche 1</h2>
+  <div class="divider"></div>
+  <p style="font-size:0.6em; margin-bottom:10px; color:#7090a0">Déchiffrement de la clé AES depuis une chaîne binaire</p>
+
+  <div class="chat fragment fade-out shrink-when-out" data-fragment-index="1">
+    <div class="chat-icon user">MOI</div>
+    <div class="chat-bubble">
+      Explique ce code : 
+<pre class="code-block"><code class="language-javascript" style="font-size: 1em;" data-trim>  
+r.decryptAsmCrypto = function(e, t) {
+  return a(e, function(e, r) {
+    var n = function(e) {
+      var t, r = e.length,
+        n = new Uint8Array(r);
+      for (t = 0; t &lt; r; t++)
+        n[t] = e.charCodeAt(t);
+      return n;
+    }(r.toString("binary"));
+
+    return t.AES_CBC.decrypt(e, n).subarray(16);
+  });
+};</code></pre>
+    </div>
+  </div>
+  <div class="chat fragment" data-fragment-index="1">
+    <div class="chat-icon user">MOI</div>
+    <div class="chat-bubble">Explique ce code : <span class="mono hl-green">r.decryptAsmCrypto = function(e, t) {...}</span></div>
+  </div>
+  <div class="chat fragment" data-fragment-index="1">
+    <div class="chat-icon ai">IA</div>
+    <div class="chat-bubble ai">
+      Cette fonction déchiffre des données en <strong>AES-CBC</strong>.<br />
+      La méthode interne convertit une chaîne binaire en <code>Uint8Array</code>.<br />
+      Le <code>.subarray(16)</code> supprime l'IV ajouté en tête après déchiffrement.</div>
+  </div>
+  <div class="chat fragment" style="margin-top:8px">
+    <div class="chat-icon user">MOI</div>
+    <div class="chat-bubble">Et si: <span class="mono">r.toString('binary')</span> = <span class="mono hl-yellow">'\x1E\x00¸\x98s\x13...'</span> ?</div>
+  </div>
+  <div class="chat fragment">
+    <div class="chat-icon ai">IA</div>
+    <div class="chat-bubble ai">Résultat : <span class="mono hl-green">Uint8Array[0x1E, 0x00, 0xB8, 0x98, ...]</span><br />➡️ C'est votre <strong>clé AES 128 bits</strong>!</div>
+  </div>
+</section>

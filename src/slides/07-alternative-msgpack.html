@@ -1,0 +1,100 @@
+<section data-transition="slide">
+  <div class="corner-tl"></div>
+  <h2>🔍 Alternative Msgpack</h2>
+  <div class="divider"></div>
+  <p style="font-size:0.6em; margin-bottom:14px; color:#7090a0">Quand suivre l'IA… ou pas</p>
+
+<section>
+      <div class="chat fragment fade-out shrink-when-out" data-fragment-index="1">
+        <div class="chat-icon user">MOI</div>
+        <div class="chat-bubble">y a-t-il un équivalent natif pour msgpack-unpack ?</div>
+      </div>
+      <div class="chat fragment" data-fragment-index="1">
+        <div class="chat-icon ai">IA</div>
+        <div class="chat-bubble ai">
+          Pas de support natif...<br />
+          <span class="fragment" data-fragment-index="2">Mais voici un décodeur de 50 lignes couvrant tous les types dont vous aurez besoin 😈</span>
+          <div class="cols fragment" data-fragment-index="2" style="font-size:0.60em">
+          <pre class="code-block"><code class="language-javascript" data-trim>function msgpackDecode(buf) {
+    let offset = 0;
+
+    function read() {
+        const byte = buf[offset++];
+
+        // positive fixint (0x00 - 0x7f)
+        if (byte <= 0x7f) return byte;
+
+        // fixstr (0xa0 - 0xbf)
+        if (byte >= 0xa0 && byte <= 0xbf) {
+            const len = byte & 0x1f;
+            return String.fromCharCode(...buf.subarray(offset, offset += len));
+        }
+
+        // fixmap (0x80 - 0x8f)
+        if (byte >= 0x80 && byte <= 0x8f) {
+            const len = byte & 0x0f;
+            const obj = {};
+            for (let i = 0; i < len; i++) {
+                const key = read();
+                obj[key] = read();
+            }
+            return obj;
+        }
+
+        // fixarray (0x90 - 0x9f)
+        if (byte >= 0x90 && byte <= 0x9f) {
+            const len = byte & 0x0f;
+            return Array.from({ length: len }, read);
+        }
+</code></pre>
+          <pre class="code-block"><code class="language-javascript" data-trim>        switch (byte) {
+            case 0xc0: return null;
+            case 0xc2: return false;
+            case 0xc3: return true;
+
+            // uint 8/16/32
+            case 0xcc: return buf[offset++];
+            case 0xcd: return (buf[offset++] << 8) | buf[offset++];
+            case 0xce: return ((buf[offset++] << 24) | (buf[offset++] << 16) | (buf[offset++] << 8) | buf[offset++]) >>> 0;
+
+            // int 8/16/32
+            case 0xd0: return buf[offset++] - (buf[offset-1] & 0x80 ? 256 : 0);
+            case 0xd1: { const v = (buf[offset++] << 8) | buf[offset++]; return v & 0x8000 ? v - 65536 : v; }
+            case 0xd2: { const v = (buf[offset++] << 24) | (buf[offset++] << 16) | (buf[offset++] << 8) | buf[offset++]; return v; }
+
+            // str 8/16
+            case 0xd9: { const len = buf[offset++]; return String.fromCharCode(...buf.subarray(offset, offset += len)); }
+            case 0xda: { const len = (buf[offset++] << 8) | buf[offset++]; return String.fromCharCode(...buf.subarray(offset, offset += len)); }
+
+            // negative fixint (0xe0 - 0xff)
+            default:
+                if (byte >= 0xe0) return byte - 256;
+                throw new Error(`Unsupported msgpack byte: 0x${byte.toString(16)}`);
+        }
+    }
+
+    return read();
+}</code></pre>
+</div>
+        </div>
+      </div>
+    </section>
+    <section>
+    <div class="chat" style="margin-top:8px">
+      <div class="chat-icon user">MOI</div>
+      <div class="chat-bubble" style="border-color:rgba(255,214,10,0.3)">🤔 <span class="hl-yellow">50 lignes que je ne maîtrise pas</span>, non testées en prod, risque de bug... je garde la dépendance.</div>
+    </div>
+    <h3 class="fragment">En résumé</h3>
+    <div class="cols">
+      <div class="card green fragment">
+        <h3 style="font-size:0.7em; margin:0 0 6px">✅ L'IA a bien aidé</h3>
+        <p style="font-size:0.62em; margin:0">Comprendre la structure du blob, identifier le rôle de msgpack, cartographier les 3 zones.</p>
+      </div>
+      <div class="card red fragment">
+        <h3 style="font-size:0.7em; margin:0 0 6px">⚠️ Suggestion refusée</h3>
+        <p style="font-size:0.62em; margin:0">L'IA propose, <span class="hl-yellow">l'Humain dispose</span>.<br />Remplacer une lib éprouvée par du code généré non maîtrisé, c'est <span class="hl-red">échanger une dépendance contre un 🪳</span>.</p>
+      </div>
+    </div>
+    </section>
+  </div>
+</section>

@@ -1,0 +1,66 @@
+<section data-transition="slide">
+  <div class="corner-tl"></div>
+  <h2>🔍 Exemple Réel — Couche 2</h2>
+  <div class="divider"></div>
+  <p style="font-size:0.6em; margin-bottom:14px; color:#7090a0">Découverte de la structure du blob chiffré</p>
+
+  <div class="chat fragment fade-out shrink-when-out" data-fragment-index="1">
+    <div class="chat-icon user">MOI</div>
+    <div class="chat-bubble">Explique:
+      <pre class="code-block" style="font-size:0.9em"><code class="language-javascript" data-trim>var o = e("msgpack-unpack");
+function s(e, t, r) {
+    var s = function(e) {
+        for (var t = new Uint8Array(e.slice(0, 256)), r = 255; r > 0 && 0 === t[r]; )
+            r--;
+        return o(t.subarray(0, r + 1))
+    }(t)
+      , a = new Uint8Array(t.slice(256, s.start))
+      , i = new Uint8Array(t.slice(s.start))
+      , l = r(a, n.from(e, "base64"))
+      , u = new Uint8Array(l.length + i.length);
+    return u.set(i, l.length),
+    u.set(l),
+    u
+}</code></pre>
+    </div>
+  </div>
+
+  <div class="cols fragment" data-fragment-index="1">
+    <div>
+      <div class="chat">
+        <div class="chat-icon user">MOI</div>
+        <div class="chat-bubble">explique la <span class="mono hl-green">function s(e, t, r)</span> qui utilise msgpack-unpack</div>
+      </div>
+      <div class="chat">
+        <div class="chat-icon ai">IA</div>
+        <div class="chat-bubble ai">Le blob binaire a 3 zones :<br>
+          <span class="hl-green">0–256</span> : Metadata msgpack (contient <code>s.start</code>)<br>
+          <span class="hl-blue">256–s.start</span> : bloc chiffré<br>
+          <span class="hl-yellow">s.start–fin</span> : reste du payload
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div style="font-family:'Share Tech Mono',monospace; font-size:0.5em; color:#4a7a6a; margin-bottom:8px">// structure du blob</div>
+      <div style="display:flex; gap:0; margin-bottom:16px">
+        <div style="background:rgba(0,255,157,0.15); border:1px solid var(--green); padding:12px 8px; font-family:'Share Tech Mono',monospace; font-size:0.45em; color:var(--green); flex:1; text-align:center">Metadata<br>MSGPACK<br>256 octets</div>
+        <div style="background:rgba(0,200,255,0.1); border:1px solid var(--blue); padding:12px 8px; font-family:'Share Tech Mono',monospace; font-size:0.45em; color:var(--blue); flex:1; text-align:center; display: flex; align-items: center; justify-content: center;">BLOC<br>CHIFFRÉ</div>
+        <div style="background:rgba(255,214,10,0.1); border:1px solid var(--yellow); padding:12px 8px; font-family:'Share Tech Mono',monospace; font-size:0.45em; color:var(--yellow); flex:2; text-align:center">RESTE<br />DU<br />PAYLOAD</div>
+      </div>
+      <pre class="code-block" style="font-size:0.5em"><code class="language-javascript" data-trim>const meta = msgpackDecode(header);
+// meta.start = 1024 (ex.)
+
+const encryptedPayload = t.slice(256, meta.start);
+const decryptedPayload = await decryptAesCbc(key, encryptedPayload);
+const unencryptedPayload  = t.slice(meta.start);
+
+const document = new Uint8Array(
+  decryptedPayload.length + unencryptedPayload.length);
+document.set(decryptedPayload);
+document.set(unencryptedPayload, decryptedPayload.length);
+</code></pre>
+</code></pre>
+    </div>
+  </div>
+</section>

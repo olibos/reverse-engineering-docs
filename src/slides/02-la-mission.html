@@ -1,0 +1,27 @@
+<section data-transition="slide">
+  <div class="corner-tl"></div>
+  <h2>🕵️ La Mission</h2>
+  <div class="divider"></div>
+
+  <div class="cols" style="margin-top: 20px">
+    <div>
+      <p>Vous analysez un fichier JS minifié d'une appli. Il fait <span class="hl-yellow">quelque chose avec du chiffrement</span>. Que fait-il exactement ? Comment ça marche ? Peut-on le reproduire ? Sans leurs librairies ?</p>
+      <p class="fragment">Avant : <span class="hl-red">des heures sur MDN<span class="fragment">, Stack Overflow</span><span class="fragment">, essais et erreurs</span></span></p>
+      <p class="fragment">Maintenant :<br /> <span class="hl-green">copy/paste → demander → comprendre</span></p>
+    </div>
+    <pre class="code-block"><code class="language-javascript" data-trim>// ce que vous trouvez...
+r.decryptAsmCrypto = function(e, t) {
+  return a(e, function(e, r) {
+    var n = function(e) {
+      var t, r = e.length,
+        n = new Uint8Array(r);
+      for (t = 0; t &lt; r; t++)
+        n[t] = e.charCodeAt(t);
+      return n;
+    }(r.toString("binary"));
+
+    return t.AES_CBC.decrypt(e, n).subarray(16);
+  });
+};</code></pre>
+  </div>
+</section>

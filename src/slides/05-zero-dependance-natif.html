@@ -1,0 +1,60 @@
+<section data-transition="slide" style="font-size: 0.95em;">
+  <div class="corner-tl"></div>
+  <h2>🔧 Zéro Dépendance — Natif</h2>
+  <div class="divider"></div>
+
+  <div class="cols">
+    <div>
+      <div class="chat" style="margin-top:10px">
+        <div class="chat-icon user">MOI</div>
+        <div class="chat-bubble">Écris un code simple avec WebCrypto sans lib externe pour décoder un Uint8Array avec AES-CBC</div>
+      </div>
+      <div class="chat fragment" data-fragment-index="1">
+        <div class="chat-icon ai">IA</div>
+        <div class="chat-bubble ai">Voici une fonction async propre utilisant <code>crypto.subtle</code> — intégré dans tous les navigateurs modernes et Node.js 18+.</div>
+      </div>
+      <div class="card red fragment" style="margin-bottom:12px" data-fragment-index="2">
+        <h3>❌ Avant</h3>
+        <p>Dépend de <span class="mono">asmcrypto.js</span> — librairie legacy de 300KB, pas tree-shakeable, non maintenue.</p>
+      </div>
+    </div>
+
+    <div>
+    <pre class="code-block fragment fade-out shrink-when-out"  data-fragment-index="1" style="font-size:0.5em"><code class="language-javascript" data-trim>r.decryptAsmCrypto = function(e, t) {
+  return a(e, function(e, r) {
+    var n = function(e) {
+      var t, r = e.length,
+        n = new Uint8Array(r);
+      for (t = 0; t &lt; r; t++)
+        n[t] = e.charCodeAt(t);
+      return n;
+    }(r.toString("binary"));
+
+    return t.AES_CBC.decrypt(e, n).subarray(16);
+  });
+};</code></pre>
+<pre class="code-block fragment fade-in"  data-fragment-index="1" style="font-size:0.5em"><code class="language-javascript" data-trim>async function decryptAesCbc(keyBytes, data) {
+  // les 16 premiers octets = IV...
+  const iv = data.slice(0, 16);
+  const payload = data.slice(16);
+
+  const key = await crypto.subtle.importKey(
+    "raw",
+    keyBytes,
+    { name: "AES-CBC" },
+    /* extractable : */ false,
+    ["decrypt"]
+  );
+
+  const plain = await crypto.subtle.decrypt(
+    { name: "AES-CBC", iv },
+    key,
+    payload
+  );
+
+  return new Uint8Array(plain);
+}</code></pre>
+</div>
+  </div>
+  <p class="fragment" data-fragment-index="2" style="font-size:0.6em; margin-top:10px">✅ Zéro dépendance &nbsp;·&nbsp; Natif &nbsp;·&nbsp; Accéléré matériellement &nbsp;·&nbsp; Navigateur + Node</p>
+</section>
