@@ -2,6 +2,9 @@ import Reveal from 'reveal.js';
 import 'reveal.js/reveal.css';
 import 'reveal.js/theme/black.css'; // or white, moon, league
 import Highlight from 'reveal.js/plugin/highlight';
+import Notes from 'reveal.js/plugin/notes';
+import Markdown from 'reveal.js/plugin/markdown';
+import Zoom from 'reveal.js/plugin/zoom';
 import 'reveal.js/plugin/highlight/monokai.css';
 import './styles/main.scss';
 
@@ -40,7 +43,7 @@ async function setup(): Promise<void> {
         width: 1100,
         height: 650,
         margin: 0.06,
-        plugins: [Highlight],
+        plugins: [Zoom, Highlight, Markdown, Notes],
     });
 
     await deck.initialize();
