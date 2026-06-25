@@ -1,5 +1,5 @@
 import { defineConfig } from "vite";
 
 export default defineConfig({
-  base: "/reverse-engineering-docs/",
+  base: process.env.CF_PAGES === "1" ? "/" : "/reverse-engineering-docs/",
 });
